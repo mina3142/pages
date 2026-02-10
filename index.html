@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026년 SW테스트 경진대회 운영 로드맵</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* 모노톤 배경 */
+            --bg-dark: #111827;
+            --bg-medium: #3e495d;
+            --bg-light: #6c7689;
+            --bg-lighter: #999da9;
+            
+            /* 텍스트 */
+            --text-primary: #f9fafb;
+            --text-secondary: #e5e7eb;
+            --text-muted: #9ca3af;
+            --text-dim: #6b7280;
+            
+            /* 보더 */
+            --border: #4a5568;
+            --border-light: #949da8;
+            
+            /* 포인트 컬러 */
+            --accent: #f59e0b;
+            --accent-light: #fbbf24;
+            --accent-dim: #d97706;
+            --accent-bg: rgba(245, 158, 11, 0.1);
+
+            --accent2: #eab308;
+            --accent2-light: #fde047;
+            --accent2-dim: #ca8a04;
+            --accent2-bg: rgba(234, 179, 8, 0.1);
+
+            --accent3: #22c55e;
+            --accent3-light: #86efac;
+            --accent3-dim: #16a34a;
+            --accent3-bg: rgba(34, 197, 94, 0.12);
+
+            /* 인포그래픽 컬러 팔레트 */
+            --info-green: #a3e635;
+            --info-sky: #38bdf8;
+            --info-yellow: #fde047;
+            --info-pink: #f9a8d4;
+            --info-orange: #fdba74;
+
+            /* 하이라이트 */
+            --highlight: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+
+        /* 텍스트 강조 */
+        .em1 { color: var(--highlight); font-weight: 700; }
+        .em2 { color: var(--info-yellow); font-weight: 700; }
+        .em3 { color: var(--info-orange); font-weight: 700; }
+
+        /* 인포그래픽 배지/라벨 */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            border: 1px solid transparent;
+            line-height: 1;
+        }
+        .tag.green { background: rgba(163, 230, 53, 0.14); border-color: rgba(163, 230, 53, 0.35); color: var(--info-green); }
+        .tag.sky   { background: rgba(56, 189, 248, 0.14); border-color: rgba(56, 189, 248, 0.35); color: var(--info-sky); }
+        .tag.yellow{ background: rgba(253, 224, 71, 0.14); border-color: rgba(253, 224, 71, 0.35); color: var(--info-yellow); }
+        .tag.pink  { background: rgba(249, 168, 212, 0.14); border-color: rgba(249, 168, 212, 0.35); color: var(--info-pink); }
+
+        /* 프레젠테이션 컨테이너 */
+        .presentation {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 슬라이드 공통 - 상하여백 축소 */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 1.2rem 4rem 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(50px);
+            transition: all 0.4s ease;
+            overflow: hidden;
+            background: var(--bg-dark);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-50px);
+        }
+
+        /* 슬라이드 내용 래퍼 - Flexbox로 구조화 */
+        .slide-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 슬라이드 헤더 (타이틀) - 고정 높이, 여백 축소 */
+        .slide-header {
+            flex-shrink: 0;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .slide-number {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-bottom: 0.3rem;
+            letter-spacing: 2px;
+        }
+
+        .slide-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slide-title i {
+            color: var(--info-yellow);
+        }
+
+        /* 슬라이드 바디 - 나머지 공간 채우고 수직 중앙 정렬 */
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 0;
+        }
+
+        /* 네비게이션 */
+        .nav-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--highlight);
+        }
+
+        .nav-btn.prev { left: 1.5rem; }
+        .nav-btn.next { right: 1.5rem; }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .nav-btn:disabled:hover {
+            background: var(--bg-light);
+            border-color: var(--border);
+            color: var(--text-secondary);
+        }
+
+        /* 페이지 인디케이터 */
+        .page-indicator {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .page-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--bg-lighter);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-dot.active {
+            background: var(--info-yellow);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .page-dot:hover {
+            background: var(--text-muted);
+        }
+
+        /* 키보드 힌트 */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 1rem;
+            right: 2rem;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            z-index: 100;
+        }
+
+        .keyboard-hint kbd {
+            background: var(--bg-light);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin: 0 0.25rem;
+        }
+
+        /* ========== 슬라이드 1: 타이틀 ========== */
+        .slide-title-page .slide-content {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide-title-page .badge {
+            background: var(--bg-light);
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--highlight);
+            margin-bottom: 1rem;
+            border: 1px solid var(--bg-light);
+        }
+
+        .slide-title-page h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--highlight);
+        }
+
+        .slide-title-page .subtitle {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1.8rem;
+            color: var(--text-secondary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .info-card {
+            background: var(--bg-medium);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .info-card:hover {
+            background: var(--bg-light);
+            transform: translateY(-3px);
+            border-color: var(--bg-light);
+        }
+
+        .info-card i {
+            font-size: 1.75rem;
+            color: var(--info-sky);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card .label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--highlight);
+            margin-bottom: 0.3rem;
+        }
+
+        .info-card .value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--info-pink);
+        }
+
+        /* ========== 슬라이드 2: 예산 ========== */
+        .budget-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .budget-card {
+            background: var(--bg-medium);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .budget-card:hover {
+            background: var(--bg-light);
+        }
+
+        .budget-card .icon {
+            width: 46px;
+            height: 46px;
+            background: rgba(56, 189, 248, 0.10);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+        }
+
+        .budget-card .icon i {
+            font-size: 1.2rem;
+            color: var(--info-sky);
+        }
+
+        .budget-card .title {
+            font-size: 1.05rem;
+            font-weight: 650;
+            color: var(--highlight);
+            margin-bottom: 0.3rem;
+        }
+
+        .budget-card .amount {
+            font-size: 2rem;
+            font-weight: 750;
+            color: var(--accent);
+        }
+
+        .budget-card .unit {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .budget-card .detail {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        .budget-note {
+            background: var(--bg-medium);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .budget-note .label {
+            color: var(--text-muted);
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .budget-note .label i {
+            color: var(--info-sky);
+            margin-right: 0.5rem;
+        }
+
+        .budget-note .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--info-yellow);
+            white-space: nowrap;
+        }
+
+        /* ========== 슬라이드 3: 배치 구성 ========== */
+        .layout-section {
+            margin-bottom: 0.8rem;
+        }
+
+        .layout-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .layout-section h3 {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .layout-section h3 i {
+            color: var(--info-green);
+        }
+
+        .layout-comparison {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .layout-card {
+            background: var(--bg-medium);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.75rem;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .layout-card:hover {
+            background: var(--bg-light);
+            border-color: var(--accent2-dim);
+        }
+
+        .layout-card .card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .layout-card .card-title i {
+            color: var(--info-green);
+        }
+
+        .layout-card img {
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            background: var(--bg-dark);
+        }
+
+        /* ========== 슬라이드 4: 개선사항 ========== */
+        .improvement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .improvement-card {
+            background: var(--bg-medium);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .improvement-card:hover {
+            background: var(--bg-light);
+        }
+
+        .improvement-card .header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .improvement-card .header .icon {
+            width: 30px;
+            height: 30px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .improvement-card .header .icon i {
+            font-size: 0.9rem;
+            color: var(--info-green);
+        }
+
+        .improvement-card .header .title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .improvement-card ul {
+            list-style: none;
+        }
+
+        .improvement-card ul li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .improvement-card ul li:last-child {
+            border-bottom: none;
+        }
+
+        .improvement-card ul li i {
+            color: var(--info-yellow);
+            margin-top: 5px;
+            font-size: 0.35rem;
+        }
+
+        /* ========== 슬라이드 5: TF 일정 ========== */
+        .tf-timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .tf-timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 3%;
+            right: 3%;
+            height: 2px;
+            background: linear-gradient(to right, var(--bg-lighter), var(--accent2-light), var(--bg-lighter));
+            transform: translateY(-50%);
+        }
+
+        .tf-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 15%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tf-item .circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--bg-medium);
+            border: 3px solid var(--bg-lighter);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.78rem;
+            color: var(--text-primary);
+            margin-bottom: 0.6rem;
+            transition: all 0.3s;
+            padding: 0.4rem;
+            line-height: 1.3;
+            box-shadow: 0 0 0 2px rgba(253, 224, 71, 0.10);
+        }
+
+        .tf-item:hover .circle {
+            background: var(--bg-light);
+            border-color: var(--accent2-light);
+            transform: scale(1.05);
+        }
+
+        .tf-item .date {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--accent2-dim);
+            margin-bottom: 0.2rem;
+        }
+
+        .tf-item .agenda {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* ========== 슬라이드 6: 월별 로드맵 ========== */
+        .monthly-timeline {
+            position: relative;
+            padding-left: 80px;
+        }
+
+        .monthly-timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--bg-lighter), var(--info-orange), var(--bg-lighter));
+        }
+
+        .month-item {
+            position: relative;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .month-item .month-badge {
+            position: absolute;
+            left: -65px;
+            width: 38px;
+            height: 38px;
+            background: var(--bg-lighter);
+            border: 2px solid var(--bg-lighter);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.78rem;
+            color: var(--text-primary);
+            z-index: 1;
+        }
+
+        .month-item.highlight .month-badge {
+            background: var(--bg-dark);
+            border-color: var(--info-orange);
+            color: var(--info-orange);
+        }
+
+        .month-item .content {
+            flex: 1;
+            background: var(--bg-medium);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.45rem 1rem;
+            transition: all 0.3s;
+        }
+
+        .month-item:hover .content {
+            background: var(--bg-light);
+        }
+
+        .month-item.highlight .content {
+            border-color: var(--info-orange);
+            background: rgba(253, 186, 116, 0.12);
+        }
+
+        .month-item .content .title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+        }
+
+        .month-item .content .tasks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+
+        .month-item .content .task-tag {
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            padding: 0.15rem 0.5rem;
+            border-radius: 50px;
+            font-size: 0.72rem;
+        }
+
+        .month-item.highlight .content .task-tag.highlight {
+            background: var(--accent);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+
+        /* ========== 슬라이드 7: 용역 일정 ========== */
+        .schedule-section {
+            margin-bottom: 1rem;
+        }
+
+        .schedule-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .schedule-section h3 {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .schedule-section h3 i {
+            color: var(--info-pink);
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .schedule-table th {
+            background: var(--bg-medium);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .schedule-table td {
+            padding: 0.4rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .schedule-table tr:hover td {
+            background: var(--bg-medium);
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .room-card {
+            background: var(--bg-medium);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 0.6rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .room-card:hover {
+            background: var(--bg-light);
+        }
+
+        .room-card .number {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--info-pink);
+        }
+
+        .room-card .unit {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .room-card .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+        }
+
+        .room-card.total {
+            background: var(--bg-dark);
+            border-color: var(--info-pink);
+        }
+
+        .room-card.total .number {
+            color: var(--info-pink);
+        }
+
+        /* ========== 슬라이드 8: 마무리 ========== */
+        .end-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        .end-page h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .end-page .org {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* 반응형 */
+        @media (max-width: 1024px) {
+            .slide { padding: 1.2rem 2rem 2rem; }
+            .info-grid { grid-template-columns: repeat(2, 1fr); }
+            .budget-grid { grid-template-columns: 1fr; }
+            .improvement-grid { grid-template-columns: repeat(2, 1fr); }
+            .room-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .slide-title-page h1 { font-size: 2rem; }
+            .slide-title { font-size: 1.5rem; }
+            .nav-btn { width: 40px; height: 40px; }
+            .monthly-timeline { padding-left: 60px; }
+            .month-item .month-badge { left: -50px; width: 35px; height: 35px; font-size: 0.7rem; }
+            .tf-timeline { flex-wrap: wrap; gap: 1rem; justify-content: center; }
+            .tf-timeline::before { display: none; }
+            .tf-item { width: 30%; }
+            .improvement-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- 슬라이드 1: 타이틀 -->
+        <div class="slide slide-title-page active" data-slide="0">
+            <div class="slide-content">
+                <div class="badge">
+                    <i class="fas fa-flag"></i> 2026년 지역 디지털 품질관리 역량강화사업
+                </div>
+                <h1><span class="em1">제5회 SW테스트 경진대회</span></h1>
+                <p class="subtitle">운영 로드맵</p>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="label">📅 일정</div>
+                        <div class="value">2026. 8. 24(월) ~ 26(수)</div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="label">📍 장소</div>
+                        <div class="value">홀리데이인 광주</div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-users"></i>
+                        <div class="label">👥 참가규모</div>
+                        <div class="value">50팀 100명</div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-building"></i>
+                        <div class="label">🏛️ 참여기관</div>
+                        <div class="value">14개 기관</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 2: 예산 구조 -->
+        <div class="slide" data-slide="1">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">02 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-coins"></i> 예산 구조</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="budget-grid">
+                        <div class="budget-card">
+                            <div class="icon"><i class="fas fa-users"></i></div>
+                            <div class="title">공동분담금 (총액)</div>
+                            <div class="amount">168<span class="unit">백만원</span></div>
+                            <div class="detail">14개 기관 × 12,000천원</div>
+                        </div>
+                        <div class="budget-card">
+                            <div class="icon"><i class="fas fa-hotel"></i></div>
+                            <div class="title">호텔 임차료</div>
+                            <div class="amount">72<span class="unit">백만원</span></div>
+                            <div class="detail">6개 기관 분담 (객실+행사장+식사)</div>
+                        </div>
+                        <div class="budget-card">
+                            <div class="icon"><i class="fas fa-cogs"></i></div>
+                            <div class="title">일반 용역비</div>
+                            <div class="amount">96<span class="unit">백만원</span></div>
+                            <div class="detail">8개 기관 분담 (운영 전반)</div>
+                        </div>
+                    </div>
+                    <div class="budget-note">
+                        <span class="label"><span class="tag sky">ℹ️ 참고</span> <span class="em3">현견적</span> : 트윈 70실·더블 10실 + 전일 식사지원 → 객실 10여실 및 뷔페 1식 추가 예정</span>
+                        <span class="value">6,520만원 → 7,200만원</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 3: 배치 구성 -->
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">03 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-sitemap"></i> 배치 구성</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="layout-section">
+                        <h3><i class="fas fa-layer-group"></i> 대회장 배치안 비교</h3>
+                        <div class="layout-comparison">
+                            <div class="layout-card">
+                                <div class="card-title">
+                                    <i class="fas fa-th-large"></i>
+                                    대회 A안 - 참가팀 지원팀 구분
+                                </div>
+                                <img src="대회A안.PNG" alt="대회 A안">
+                            </div>
+                            <div class="layout-card">
+                                <div class="card-title">
+                                    <i class="fas fa-th"></i>
+                                    대회 B안 - 참가팀 넓게 배치
+                                </div>
+                                <img src="대회B안.PNG" alt="대회 B안">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layout-section">
+                        <h3><i class="fas fa-layer-group"></i> 기타 배치</h3>
+                        <div class="layout-comparison">
+                            <div class="layout-card">
+                                <div class="card-title">
+                                    <i class="fas fa-th-large"></i>
+                                    시상 - 라운드 테이블
+                                </div>
+                                <img src="시상.PNG" alt="시상">
+                            </div>
+                            <div class="layout-card">
+                                <div class="card-title">
+                                    <i class="fas fa-th"></i>
+                                    미팅룸 - PC설치
+                                </div>
+                                <img src="미팅룸.png" alt="미팅룸">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 4: 개선사항 -->
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">04 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-lightbulb"></i> 운영개선을 위한 협의사항</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="improvement-grid">
+                        <div class="improvement-card">
+                            <div class="header">
+                                <div class="icon"><i class="fas fa-shield-alt"></i></div>
+                                <span class="title">운영 공정성 강화</span>
+                            </div>
+                            <ul>
+                                <li><i class="fas fa-circle"></i> AI 사용 범위 명확화</li>
+                                <li><i class="fas fa-circle"></i> 팀원간 공유 방식 및 외부유출 문제 검토</li>
+                                <li><i class="fas fa-circle"></i> 협업툴 모니터링 기능 도입 검토</li>
+                                <li><i class="fas fa-circle"></i> 대회시간 현행 유지 여부</li>
+                            </ul>
+                        </div>
+                        <div class="improvement-card">
+                            <div class="header">
+                                <div class="icon"><i class="fas fa-server"></i></div>
+                                <span class="title">인프라 개선</span>
+                            </div>
+                            <ul>
+                                <li><i class="fas fa-circle"></i> 제출 방식 효율화 및 안정성 강화</li>
+                                <li><i class="fas fa-circle"></i> 다중접속 사전 부하테스트 필수화</li>
+                                <li><i class="fas fa-circle"></i> 문제상황 대응방안</li>
+                                <li><i class="fas fa-circle"></i> 기술전문가 상주 지원</li>
+                            </ul>
+                        </div>
+                        <div class="improvement-card">
+                            <div class="header">
+                                <div class="icon"><i class="fas fa-box-open"></i></div>
+                                <span class="title">테스트 제품 품질</span>
+                            </div>
+                            <ul>
+                                <li><i class="fas fa-circle"></i> 실제 사용·판매 제품 우선 선정</li>
+                                <li><i class="fas fa-circle"></i> 테스트제품 기로그인 여부</li>
+                                <li><i class="fas fa-circle"></i> 기본 기능 안정성 사전 검증</li>
+                                <li><i class="fas fa-circle"></i> 제품 특징·주의사항 상세 안내</li>
+                            </ul>
+                        </div>
+                        <div class="improvement-card">
+                            <div class="header">
+                                <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+                                <span class="title">참가자 지원 강화</span>
+                            </div>
+                            <ul>
+                                <li><i class="fas fa-circle"></i> 1일차 팀빌딩 + 3일차 레크리에이션</li>
+                                <li><i class="fas fa-circle"></i> 사전교육 실시</li>
+                                <li><i class="fas fa-circle"></i> 교통지원</li>
+                                <li><i class="fas fa-circle"></i> 전체 기념품 추가</li>
+                            </ul>
+                        </div>
+                        <div class="improvement-card">
+                            <div class="header">
+                                <div class="icon"><i class="fas fa-ellipsis-h"></i></div>
+                                <span class="title">기타 개선사항</span>
+                            </div>
+                            <ul>
+                                <li><i class="fas fa-circle"></i> 기타 협상내용</li>
+                                <li><i class="fas fa-circle"></i> TF 운영방식</li>
+                                <li><i class="fas fa-circle"></i> 기관별 숙박비 지원 문제</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 5: TF 운영 일정 -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">05 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-user-friends"></i> TF 운영 일정</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="tf-timeline">
+                        <div class="tf-item">
+                            <div class="circle">TF구성</div>
+                            <div>
+                                <div class="date">2월</div>
+                                <div class="agenda">사업계획 공유<br>담당자 지정</div>
+                            </div>
+                        </div>
+                        <div class="tf-item">
+                            <div class="circle">세부계획<br>수립</div>
+                            <div>
+                                <div class="date">3월</div>
+                                <div class="agenda">용역 준비<br>호남권 연구회</div>
+                            </div>
+                        </div>
+                        <div class="tf-item">
+                            <div class="circle">공고 추진<br>현황 공유</div>
+                            <div>
+                                <div class="date">4월</div>
+                                <div class="agenda">공고 추진<br>기관협약 후 입찰공고</div>
+                            </div>
+                        </div>
+                        <div class="tf-item">
+                            <div class="circle">용역 선정</div>
+                            <div>
+                                <div class="date">4~5월</div>
+                                <div class="agenda">용역선정<br>예선 추진</div>
+                            </div>
+                        </div>
+                        <div class="tf-item">
+                            <div class="circle">사전미팅</div>
+                            <div>
+                                <div class="date">8월초</div>
+                                <div class="agenda">본선 최종점검<br>리허설</div>
+                            </div>
+                        </div>
+                        <div class="tf-item">
+                            <div class="circle">사후</div>
+                            <div>
+                                <div class="date">9월</div>
+                                <div class="agenda">결과보고<br>대금 지출</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 6: 월별 로드맵 -->
+        <div class="slide" data-slide="5">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">06 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-road"></i> 세부 로드맵 (2월 ~ 8월)</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="monthly-timeline">
+                        <div class="month-item">
+                            <div class="month-badge">2월</div>
+                            <div class="content">
+                                <div class="title">기획 및 TF 구성</div>
+                                <div class="tasks">
+                                    <span class="task-tag">TF 구성</span>
+                                    <span class="task-tag">견적서 검토 및 분담금 확정</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">3월</div>
+                            <div class="content">
+                                <div class="title">분담금 확정 및 공고 준비</div>
+                                <div class="tasks">
+                                    <span class="task-tag">시장상 협의</span>
+                                    <span class="task-tag">기본계획 수립</span>
+                                    <span class="task-tag">용역 공고 준비</span>
+                                    <span class="task-tag">8개기관 협약체결</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">4월</div>
+                            <div class="content">
+                                <div class="title">용역 및 테스트제품 공고</div>
+                                <div class="tasks">
+                                    <span class="task-tag">용역 입찰 공고</span>
+                                    <span class="task-tag">테스트제품 모집 공고</span>
+                                    <span class="task-tag">TF회의</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">5월</div>
+                            <div class="content">
+                                <div class="title">용역 및 테스트제품 선정</div>
+                                <div class="tasks">
+                                    <span class="task-tag">용역 선정</span>
+                                    <span class="task-tag">테스트제품 선정</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">6월</div>
+                            <div class="content">
+                                <div class="title">예선 운영</div>
+                                <div class="tasks">
+                                    <span class="task-tag">대회 홍보</span>
+                                    <span class="task-tag">참가자 모집</span>
+                                    <span class="task-tag">강사 및 심사위원 섭외</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">7월</div>
+                            <div class="content">
+                                <div class="title">본선 준비</div>
+                                <div class="tasks">
+                                    <span class="task-tag">예선 개최</span>
+                                    <span class="task-tag">본선 참가자 확정 및 안내</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item highlight">
+                            <div class="month-badge">8월</div>
+                            <div class="content">
+                                <div class="title"><span class="em1">🏆 본선 대회 개최</span></div>
+                                <div class="tasks">
+                                    <span class="task-tag">TF회의</span>
+                                    <span class="task-tag">사전교육</span>
+                                    <span class="task-tag">행사장 설치</span>
+                                    <span class="task-tag highlight">⭐ 8/24~26 본선 ⭐</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 7: 용역 일정 -->
+        <div class="slide" data-slide="6">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">07 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-clipboard-list"></i> 용역 일정</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="schedule-section">
+                        <h3><i class="fas fa-file-contract"></i> 용역 추진 세부일정</h3>
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:20%">단계</th>
+                                    <th style="width:20%">시기</th>
+                                    <th>주요 내용</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>계획수립</strong></td><td>3월말</td><td>계획수립, 협약체결</td></tr>
+                                <tr><td><strong>입찰공고</strong></td><td>4월</td><td>용역 공고</td></tr>
+                                <tr><td><strong>제안평가</strong></td><td>5월</td><td>평가 및 선정</td></tr>
+                                <tr><td><strong>계약체결</strong></td><td>5월 말</td><td>협상계약, 테스트 제품 섭외</td></tr>
+                                <tr><td><strong>완료</strong></td><td>9~10월</td><td>결과보고서 제출, 검수 완료</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="schedule-section">
+                        <h3><i class="fas fa-bed"></i> 객실 예상 배정 (50팀 100명 기준)</h3>
+                        <div class="room-grid">
+                            <div class="room-card">
+                                <div class="number">52</div>
+                                <div class="unit">실</div>
+                                <div class="label">참가자 (2인1실)</div>
+                            </div>
+                            <div class="room-card">
+                                <div class="number">10</div>
+                                <div class="unit">실</div>
+                                <div class="label">심사위원</div>
+                            </div>
+                            <div class="room-card">
+                                <div class="number">17</div>
+                                <div class="unit">실</div>
+                                <div class="label">기관 담당자</div>
+                            </div>
+                            <div class="room-card">
+                                <div class="number">10</div>
+                                <div class="unit">실</div>
+                                <div class="label">용역사 및 기타</div>
+                            </div>
+                            <div class="room-card total">
+                                <div class="number">약 90</div>
+                                <div class="unit">실</div>
+                                <div class="label">총 예상</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 8: 마무리 -->
+        <div class="slide" data-slide="7">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">08 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-trophy"></i> 끝</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="end-page">
+                        <h2>감사합니다</h2>
+                        <p class="org">과학기술정보통신부 · 정보통신산업진흥원(NIPA) · 14개 지역 참여기관</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 네비게이션 버튼 -->
+        <button class="nav-btn prev" onclick="prevSlide()" id="prevBtn">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="nav-btn next" onclick="nextSlide()" id="nextBtn">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <!-- 페이지 인디케이터 -->
+        <div class="page-indicator" id="pageIndicator"></div>
+
+        <!-- 키보드 힌트 -->
+        <div class="keyboard-hint">
+            <kbd>←</kbd> <kbd>→</kbd> 또는 클릭으로 이동
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+
+        // 페이지 인디케이터 생성
+        const pageIndicator = document.getElementById('pageIndicator');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => goToSlide(i);
+            pageIndicator.appendChild(dot);
+        }
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+
+            const dots = document.querySelectorAll('.page-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            if (diff > swipeThreshold) {
+                nextSlide();
+            } else if (diff < -swipeThreshold) {
+                prevSlide();
+            }
+        }
+
+        updateSlide();
+    </script>
+</body>
+</html>
