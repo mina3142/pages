@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026년 SW테스트 경진대회 운영 로드맵</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #111827;
+            --bg-medium: #3e495d;
+            --bg-light: #6c7689;
+            --bg-lighter: #999da9;
+            --text-primary: #f9fafb;
+            --text-secondary: #e5e7eb;
+            --text-muted: #9ca3af;
+            --text-dim: #6b7280;
+            --border: #4a5568;
+            --border-light: #949da8;
+            --accent: #f59e0b;
+            --accent-light: #fbbf24;
+            --accent-dim: #d97706;
+            --accent-bg: rgba(245, 158, 11, 0.1);
+            --accent2: #eab308;
+            --accent2-light: #fde047;
+            --accent2-dim: #ca8a04;
+            --accent2-bg: rgba(234, 179, 8, 0.1);
+            --accent3: #22c55e;
+            --accent3-light: #86efac;
+            --accent3-dim: #16a34a;
+            --accent3-bg: rgba(34, 197, 94, 0.12);
+            --info-green: #a3e635;
+            --info-sky: #38bdf8;
+            --info-yellow: #fde047;
+            --info-pink: #f9a8d4;
+            --info-orange: #fdba74;
+            --highlight: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+
+        .em1 { color: var(--highlight); font-weight: 700; }
+        .em2 { color: var(--info-yellow); font-weight: 700; }
+        .em3 { color: var(--info-orange); font-weight: 700; }
+
+        .tag {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.8rem;
+            border: 1px solid transparent; line-height: 1;
+        }
+        .tag.green { background: rgba(163,230,53,0.14); border-color: rgba(163,230,53,0.35); color: var(--info-green); }
+        .tag.sky   { background: rgba(56,189,248,0.14); border-color: rgba(56,189,248,0.35); color: var(--info-sky); }
+        .tag.yellow{ background: rgba(253,224,71,0.14); border-color: rgba(253,224,71,0.35); color: var(--info-yellow); }
+        .tag.pink  { background: rgba(249,168,212,0.14); border-color: rgba(249,168,212,0.35); color: var(--info-pink); }
+
+        .presentation { width: 100%; height: 100%; position: relative; overflow: hidden; }
+
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 1.2rem 4rem 2rem; opacity: 0; visibility: hidden;
+            transform: translateX(50px); transition: all 0.4s ease;
+            overflow: hidden; background: var(--bg-dark);
+        }
+        .slide.active { opacity: 1; visibility: visible; transform: translateX(0); }
+        .slide.prev { transform: translateX(-50px); }
+
+        .slide-content { max-width: 1200px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; }
+
+        .slide-header { flex-shrink: 0; margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+        .slide-number { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 0.3rem; letter-spacing: 2px; }
+        .slide-title { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 1rem; }
+        .slide-title i { color: var(--info-yellow); }
+
+        .slide-body { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
+
+        .nav-btn {
+            position: fixed; top: 50%; transform: translateY(-50%);
+            width: 50px; height: 50px; background: var(--bg-light);
+            border: 1px solid var(--border); border-radius: 50%;
+            color: var(--text-secondary); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; transition: all 0.3s; z-index: 100;
+        }
+        .nav-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--highlight); }
+        .nav-btn.prev { left: 1.5rem; }
+        .nav-btn.next { right: 1.5rem; }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .nav-btn:disabled:hover { background: var(--bg-light); border-color: var(--border); color: var(--text-secondary); }
+
+        .page-indicator { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 100; }
+        .page-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bg-lighter); cursor: pointer; transition: all 0.3s; }
+        .page-dot.active { background: var(--info-yellow); width: 30px; border-radius: 5px; }
+        .page-dot:hover { background: var(--text-muted); }
+
+        .keyboard-hint { position: fixed; bottom: 1rem; right: 2rem; font-size: 0.75rem; color: var(--text-dim); z-index: 100; }
+        .keyboard-hint kbd { background: var(--bg-light); padding: 0.25rem 0.5rem; border-radius: 4px; margin: 0 0.25rem; }
+
+        /* 슬라이드 1: 타이틀 */
+        .slide-title-page .slide-content { justify-content: center; align-items: center; text-align: center; }
+        .slide-title-page .badge { background: var(--bg-light); padding: 0.6rem 1.5rem; border-radius: 50px; font-size: 0.875rem; color: var(--highlight); margin-bottom: 1rem; border: 1px solid var(--bg-light); }
+        .slide-title-page h1 { font-size: 3.2rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--highlight); }
+        .slide-title-page .subtitle { font-size: 1.4rem; font-weight: 600; margin-bottom: 1.8rem; color: var(--text-secondary); }
+
+        .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; width: 100%; max-width: 900px; }
+        .info-card { background: var(--bg-medium); border: 1px solid var(--border); border-radius: 16px; padding: 1rem; text-align: center; transition: all 0.3s; }
+        .info-card:hover { background: var(--bg-light); transform: translateY(-3px); border-color: var(--bg-light); }
+        .info-card i { font-size: 1.75rem; color: var(--info-sky); margin-bottom: 0.5rem; }
+        .info-card .label { font-size: 1.1rem; font-weight: 600; color: var(--highlight); margin-bottom: 0.3rem; }
+        .info-card .value { font-size: 0.95rem; font-weight: 600; color: var(--info-pink); }
+
+        /* 슬라이드 2: 예산 */
+        .budget-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.25rem; }
+        .budget-card { background: var(--bg-medium); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; text-align: center; transition: all 0.3s; }
+        .budget-card:hover { background: var(--bg-light); }
+        .budget-card .icon { width: 46px; height: 46px; background: rgba(56,189,248,0.10); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; }
+        .budget-card .icon i { font-size: 1.2rem; color: var(--info-sky); }
+        .budget-card .title { font-size: 1.05rem; font-weight: 650; color: var(--highlight); margin-bottom: 0.3rem; }
+        .budget-card .amount { font-size: 2rem; font-weight: 750; color: var(--accent); }
+        .budget-card .unit { font-size: 1rem; color: var(--text-muted); }
+        .budget-card .detail { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+        /* 슬라이드 3: 배치 구성 */
+        .layout-comparison { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .layout-card { background: var(--bg-medium); border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem; transition: all 0.3s; display: flex; flex-direction: column; }
+        .layout-card:hover { background: var(--bg-light); border-color: var(--accent2-dim); }
+        .layout-card .card-title { font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+        .layout-card .card-title i { color: var(--info-green); }
+        .layout-card img { width: 100%; flex: 1; min-height: 0; object-fit: contain; border-radius: 8px; border: 1px solid var(--border-light); background: var(--bg-dark); }
+
+        /* 슬라이드 4: 운영 변경 안내 */
+        .changes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .change-card { background: var(--bg-medium); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; transition: all 0.3s; display: flex; flex-direction: column; }
+        .change-card:hover { background: var(--bg-light); border-color: var(--accent2-dim); transform: translateY(-3px); }
+        .change-card .card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-size: 1.4rem; }
+        .change-card .card-icon.ai { background: rgba(56,189,248,0.12); color: var(--info-sky); }
+        .change-card .card-icon.doc { background: rgba(163,230,53,0.12); color: var(--info-green); }
+        .change-card .card-icon.hotel { background: rgba(249,168,212,0.12); color: var(--info-pink); }
+        .change-card .card-label { font-size: 0.75rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem; }
+        .change-card .card-heading { font-size: 1.15rem; font-weight: 700; color: var(--highlight); margin-bottom: 0.75rem; line-height: 1.4; }
+        .change-card .card-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; flex: 1; }
+        .change-card .card-desc strong { color: var(--info-yellow); font-weight: 600; }
+
+        /* 슬라이드 5: 월별 로드맵 */
+        .monthly-timeline { position: relative; padding-left: 80px; }
+        .monthly-timeline::before { content: ''; position: absolute; left: 30px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--bg-lighter), var(--info-orange), var(--bg-lighter)); }
+        .month-item { position: relative; margin-bottom: 0.5rem; display: flex; align-items: flex-start; }
+        .month-item .month-badge { position: absolute; left: -65px; width: 38px; height: 38px; background: var(--bg-lighter); border: 2px solid var(--bg-lighter); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.78rem; color: var(--text-primary); z-index: 1; }
+        .month-item.highlight .month-badge { background: var(--bg-dark); border-color: var(--info-orange); color: var(--info-orange); }
+        .month-item .content { flex: 1; background: var(--bg-medium); border: 1px solid var(--border); border-radius: 10px; padding: 0.5rem 1rem; transition: all 0.3s; }
+        .month-item:hover .content { background: var(--bg-light); }
+        .month-item.highlight .content { border-color: var(--info-orange); background: rgba(253,186,116,0.12); }
+        .month-item .content .title { font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; font-size: 0.88rem; }
+        .month-item .content .tasks { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        .month-item .content .task-tag { background: var(--bg-light); color: var(--text-secondary); padding: 0.15rem 0.5rem; border-radius: 50px; font-size: 0.72rem; }
+        .month-item.highlight .content .task-tag.highlight { background: var(--accent); color: var(--bg-dark); font-weight: 600; }
+
+        /* 슬라이드 6: TF팀 운영 안내 */
+        .guide-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 1.25rem; }
+        .guide-card { background: var(--bg-medium); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; transition: all 0.3s; display: flex; flex-direction: column; }
+        .guide-card:hover { background: var(--bg-light); border-color: var(--accent2-dim); transform: translateY(-3px); }
+        .guide-card .card-num { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.85rem; font-size: 0.85rem; font-weight: 700; }
+        .guide-card .card-num.n1 { background: rgba(56,189,248,0.12); color: var(--info-sky); }
+        .guide-card .card-num.n2 { background: rgba(163,230,53,0.12); color: var(--info-green); }
+        .guide-card .card-num.n3 { background: rgba(253,224,71,0.12); color: var(--info-yellow); }
+        .guide-card .card-num.n4 { background: rgba(249,168,212,0.12); color: var(--info-pink); }
+        .guide-card .card-heading { font-size: 1.05rem; font-weight: 700; color: var(--highlight); margin-bottom: 0.6rem; line-height: 1.4; }
+        .guide-card .card-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; flex: 1; }
+        .guide-card .card-desc strong { color: var(--info-yellow); font-weight: 600; }
+        .guide-footer { background: var(--bg-medium); border: 1px solid var(--border); border-left: 3px solid var(--info-orange); border-radius: 12px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; color: var(--text-secondary); }
+        .guide-footer i { color: var(--info-orange); font-size: 1.1rem; flex-shrink: 0; }
+        .guide-footer strong { color: var(--highlight); font-weight: 600; }
+
+        /* 슬라이드 7: 마무리 */
+        .end-page { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; }
+        .end-page h2 { font-size: 2.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem; }
+        .end-page .org { color: var(--text-muted); font-size: 1rem; }
+
+        @media (max-width: 1024px) {
+            .slide { padding: 1.2rem 2rem 2rem; }
+            .info-grid { grid-template-columns: repeat(2, 1fr); }
+            .budget-grid { grid-template-columns: 1fr; }
+            .changes-grid { grid-template-columns: 1fr; }
+            .guide-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .slide-title-page h1 { font-size: 2rem; }
+            .slide-title { font-size: 1.5rem; }
+            .nav-btn { width: 40px; height: 40px; }
+            .monthly-timeline { padding-left: 60px; }
+            .month-item .month-badge { left: -50px; width: 35px; height: 35px; font-size: 0.7rem; }
+            .layout-comparison { grid-template-columns: 1fr; }
+            .guide-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- 슬라이드 1: 타이틀 -->
+        <div class="slide slide-title-page active" data-slide="0">
+            <div class="slide-content">
+                <div class="badge">
+                    <i class="fas fa-flag"></i> 2026년 지역 디지털 품질관리 역량강화사업
+                </div>
+                <h1><span class="em1">제5회 SW테스트 경진대회</span></h1>
+                <p class="subtitle">운영 로드맵</p>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div class="label">📅 일정</div>
+                        <div class="value">2026. 8. 24(월) ~ 26(수)</div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="label">📍 장소</div>
+                        <div class="value">홀리데이인 광주</div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-users"></i>
+                        <div class="label">👥 참가규모</div>
+                        <div class="value">50팀 100명</div>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-building"></i>
+                        <div class="label">🏛️ 참여기관</div>
+                        <div class="value">14개 기관</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 2: 예산 구조 -->
+        <div class="slide" data-slide="1">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">02 / 07</div>
+                    <h2 class="slide-title"><i class="fas fa-coins"></i> 예산 구조</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="budget-grid">
+                        <div class="budget-card">
+                            <div class="icon"><i class="fas fa-users"></i></div>
+                            <div class="title">공동분담금 (총액)</div>
+                            <div class="amount">168<span class="unit">백만원</span></div>
+                            <div class="detail">14개 기관 × 12,000천원</div>
+                        </div>
+                        <div class="budget-card">
+                            <div class="icon"><i class="fas fa-hotel"></i></div>
+                            <div class="title">호텔 임차료</div>
+                            <div class="amount">72<span class="unit">백만원</span></div>
+                            <div class="detail">6개 기관 분담 (객실+행사장+식사)</div>
+                        </div>
+                        <div class="budget-card">
+                            <div class="icon"><i class="fas fa-cogs"></i></div>
+                            <div class="title">일반 용역비</div>
+                            <div class="amount">96<span class="unit">백만원</span></div>
+                            <div class="detail">8개 기관 분담 (운영 전반)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 3: 배치 구성 -->
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">03 / 07</div>
+                    <h2 class="slide-title"><i class="fas fa-sitemap"></i> 배치 구성</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="layout-comparison">
+                        <div class="layout-card">
+                            <div class="card-title">
+                                <i class="fas fa-th-large"></i>
+                                대회 배치
+                            </div>
+                            <img src="대회.PNG" alt="대회 배치">
+                        </div>
+                        <div class="layout-card">
+                            <div class="card-title">
+                                <i class="fas fa-award"></i>
+                                시상식 배치
+                            </div>
+                            <img src="시상.PNG" alt="시상식 배치">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 4: 2026년 운영 변경 안내 -->
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">04 / 07</div>
+                    <h2 class="slide-title"><i class="fas fa-bullhorn"></i> 2026년 운영 변경 안내</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="changes-grid">
+                        <div class="change-card">
+                            <div class="card-icon ai">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="card-label">변경 01</div>
+                            <div class="card-heading">참가자 AI 사용 허용</div>
+                            <div class="card-desc">
+                                2026년부터 대회 참가자의 <strong>AI 도구 사용이 허용</strong>됩니다. 테스트 수행 시 AI를 활용한 분석·작성이 가능합니다.
+                            </div>
+                        </div>
+                        <div class="change-card">
+                            <div class="card-icon doc">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="card-label">변경 02</div>
+                            <div class="card-heading">심사대상 및 제출결과물</div>
+                            <div class="card-desc">
+                                심사대상 제출결과물이 <strong>테스트 결과서 1식</strong>으로 통일됩니다.
+                            </div>
+                        </div>
+                        <div class="change-card">
+                            <div class="card-icon hotel">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <div class="card-label">변경 03</div>
+                            <div class="card-heading">기관별 숙박비 개별결제</div>
+                            <div class="card-desc">
+                                2026년부터 숙박비는 <strong>기관별 개별결제</strong>로 변경될 예정이며, 이를 위해 <strong>참가확정인원 사전조사</strong>가 실시됩니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 5: 세부 로드맵 (기존 6→5) -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">05 / 07</div>
+                    <h2 class="slide-title"><i class="fas fa-road"></i> 세부 로드맵 (3월 ~ 8월)</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="monthly-timeline">
+                        <div class="month-item">
+                            <div class="month-badge">3월</div>
+                            <div class="content">
+                                <div class="title">분담금 확정 및 기본계획 수립</div>
+                                <div class="tasks">
+                                    <span class="task-tag">견적서 검토 및 분담금 확정</span>
+                                    <span class="task-tag">기본계획 수립</span>
+                                    <span class="task-tag">시장상 협의</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">4월</div>
+                            <div class="content">
+                                <div class="title">용역 공고 준비 및 협약 체결</div>
+                                <div class="tasks">
+                                    <span class="task-tag">용역 공고 준비</span>
+                                    <span class="task-tag">기관 간 협약 체결</span>
+                                    <span class="task-tag">TF회의</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">5월</div>
+                            <div class="content">
+                                <div class="title">용역 공고 및 테스트제품 섭외</div>
+                                <div class="tasks">
+                                    <span class="task-tag">용역 입찰 공고</span>
+                                    <span class="task-tag">테스트제품 섭외</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">6월</div>
+                            <div class="content">
+                                <div class="title">용역사 선정 및 참가자 모집 공고</div>
+                                <div class="tasks">
+                                    <span class="task-tag">용역사 평가 및 선정</span>
+                                    <span class="task-tag">참가자 모집 공고</span>
+                                    <span class="task-tag">대회 홍보</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item">
+                            <div class="month-badge">7월</div>
+                            <div class="content">
+                                <div class="title">예선 개최 및 본선 준비</div>
+                                <div class="tasks">
+                                    <span class="task-tag">예선 개최</span>
+                                    <span class="task-tag">본선 참가자 확정 및 안내</span>
+                                    <span class="task-tag">강사 및 심사위원 섭외</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="month-item highlight">
+                            <div class="month-badge">8월</div>
+                            <div class="content">
+                                <div class="title"><span class="em1">🏆 대회 개최</span></div>
+                                <div class="tasks">
+                                    <span class="task-tag">TF회의</span>
+                                    <span class="task-tag">사전교육</span>
+                                    <span class="task-tag">행사장 설치</span>
+                                    <span class="task-tag highlight">⭐ 8/24~26 본선 ⭐</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 6: 협의체 및 TF팀 운영 안내 (기존 5→6) -->
+        <div class="slide" data-slide="5">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">06 / 07</div>
+                    <h2 class="slide-title"><i class="fas fa-handshake"></i> 협의체 및 TF팀 운영 안내</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="guide-grid">
+                        <div class="guide-card">
+                            <div class="card-num n1">①</div>
+                            <div class="card-heading">TF운영</div>
+                            <div class="card-desc">
+                                경진대회 운영 효율화를 위한 <strong>기관별 TF담당자</strong> 1명을 지정하여 주시기 바랍니다.
+                            </div>
+                        </div>
+                        <div class="guide-card">
+                            <div class="card-num n2">②</div>
+                            <div class="card-heading">업무대행 지양</div>
+                            <div class="card-desc">
+                                업무대행 지양. 불가피한 사유로 대행 시 업무혼선 방지를 위해 <strong>담당자 본인</strong>이 더욱 꼼꼼히 후속 처리를 책임져 주시기 바랍니다.
+                            </div>
+                        </div>
+                        <div class="guide-card">
+                            <div class="card-num n3">③</div>
+                            <div class="card-heading">안내 회신</div>
+                            <div class="card-desc">
+                                안내 사항을 꼼꼼히 확인 후 <strong>기한 내 회신</strong> 부탁드리며, 기한 내 회신이 어려울 시 사전에 연락 부탁드립니다.
+                            </div>
+                        </div>
+                        <div class="guide-card">
+                            <div class="card-num n4">④</div>
+                            <div class="card-heading">의견 제시</div>
+                            <div class="card-desc">
+                                대표기관에 변경 사항, 요청 사항이 있을 시 <strong>부담 없이 빠르게</strong> 연락 부탁드립니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="guide-footer">
+                        <i class="fas fa-info-circle"></i>
+                        <span>원활한 협업을 위해 <strong>담당자분들의 적극적인 협조</strong>를 부탁드립니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 7: 마무리 -->
+        <div class="slide" data-slide="6">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">07 / 07</div>
+                    <h2 class="slide-title"><i class="fas fa-trophy"></i> 끝</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="end-page">
+                        <h2>감사합니다</h2>
+                        <p class="org">과학기술정보통신부 · 정보통신산업진흥원(NIPA) · 14개 지역 참여기관</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="nav-btn prev" onclick="prevSlide()" id="prevBtn">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="nav-btn next" onclick="nextSlide()" id="nextBtn">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <div class="page-indicator" id="pageIndicator"></div>
+
+        <div class="keyboard-hint">
+            <kbd>←</kbd> <kbd>→</kbd> 또는 클릭으로 이동
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+
+        const pageIndicator = document.getElementById('pageIndicator');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+            dot.onclick = () => goToSlide(i);
+            pageIndicator.appendChild(dot);
+        }
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlide) slide.classList.add('active');
+                else if (index < currentSlide) slide.classList.add('prev');
+            });
+            const dots = document.querySelectorAll('.page-dot');
+            dots.forEach((dot, index) => dot.classList.toggle('active', index === currentSlide));
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() { if (currentSlide < totalSlides - 1) { currentSlide++; updateSlide(); } }
+        function prevSlide() { if (currentSlide > 0) { currentSlide--; updateSlide(); } }
+        function goToSlide(index) { currentSlide = index; updateSlide(); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+        });
+
+        let touchStartX = 0, touchEndX = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', (e) => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); });
+        function handleSwipe() {
+            const diff = touchStartX - touchEndX;
+            if (diff > 50) nextSlide();
+            else if (diff < -50) prevSlide();
+        }
+
+        updateSlide();
+    </script>
+</body>
+</html>
