@@ -162,7 +162,87 @@
         .month-item .content .task-tag { background: var(--bg-light); color: var(--text-secondary); padding: 0.15rem 0.5rem; border-radius: 50px; font-size: 0.72rem; }
         .month-item.highlight .content .task-tag.highlight { background: var(--accent); color: var(--bg-dark); font-weight: 600; }
 
-        /* 슬라이드 6: TF팀 운영 안내 */
+        /* 슬라이드 6: 예선 운영 안내 */
+        .prelim-notice {
+            background: var(--bg-medium);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--info-orange);
+            border-radius: 12px;
+            padding: 1.1rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .prelim-notice .notice-icon {
+            width: 46px; height: 46px;
+            background: rgba(253,186,116,0.15);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .prelim-notice .notice-icon i { color: var(--info-orange); font-size: 1.25rem; }
+        .prelim-notice .notice-label {
+            font-size: 0.72rem; font-weight: 700; color: var(--info-orange);
+            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.4rem;
+        }
+        .prelim-notice .notice-text { font-size: 0.98rem; color: var(--text-secondary); line-height: 1.65; }
+        .prelim-notice .notice-text strong { color: var(--info-yellow); font-weight: 700; }
+
+        .prelim-stats {
+            display: flex; justify-content: center; align-items: center;
+            gap: 1rem; margin-bottom: 1.5rem;
+        }
+        .prelim-stats .stat-card {
+            background: var(--bg-medium); border: 1px solid var(--border);
+            border-radius: 14px; padding: 0.85rem 1.4rem;
+            text-align: center; min-width: 150px;
+        }
+        .prelim-stats .stat-card.highlight {
+            background: rgba(56,189,248,0.10); border-color: rgba(56,189,248,0.40);
+        }
+        .prelim-stats .stat-label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.35rem; letter-spacing: 0.3px; }
+        .prelim-stats .stat-value { font-size: 1.85rem; font-weight: 750; color: var(--highlight); line-height: 1; }
+        .prelim-stats .stat-card.highlight .stat-value { color: var(--info-sky); }
+        .prelim-stats .stat-unit { font-size: 0.95rem; color: var(--text-muted); margin-left: 0.2rem; font-weight: 500; }
+        .prelim-stats .stat-divider { font-size: 1.4rem; color: var(--text-dim); font-weight: 300; }
+
+        .prelim-steps {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem; align-items: stretch;
+        }
+        .step-card {
+            background: var(--bg-medium); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1rem 1.25rem; transition: all 0.3s;
+            display: flex; flex-direction: column;
+        }
+        .step-card:hover { background: var(--bg-light); transform: translateY(-2px); }
+        .step-card.s1 { border-left: 4px solid var(--info-sky); }
+        .step-card.s2 { border-left: 4px solid var(--info-pink); }
+        .step-card .step-header {
+            display: flex; align-items: center; gap: 0.65rem;
+            margin-bottom: 0.7rem; padding-bottom: 0.6rem;
+            border-bottom: 1px dashed var(--border);
+        }
+        .step-card .step-badge {
+            padding: 0.25rem 0.7rem; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        .step-card.s1 .step-badge { background: rgba(56,189,248,0.15); color: var(--info-sky); border: 1px solid rgba(56,189,248,0.35); }
+        .step-card.s2 .step-badge { background: rgba(249,168,212,0.15); color: var(--info-pink); border: 1px solid rgba(249,168,212,0.35); }
+        .step-card .step-title { font-size: 1.02rem; font-weight: 700; color: var(--highlight); }
+        .step-card .step-options { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.55rem; }
+        .step-card .step-opt {
+            background: var(--bg-dark); border: 1px solid var(--border-light);
+            color: var(--highlight); padding: 0.45rem 0.5rem; border-radius: 8px;
+            font-size: 0.85rem; font-weight: 600; flex: 1; text-align: center;
+        }
+        .step-card .step-or { color: var(--text-muted); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.5px; }
+        .step-card .step-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+        .step-card .step-desc strong { color: var(--info-yellow); font-weight: 600; }
+
+        /* 슬라이드 7: TF팀 운영 안내 */
         .guide-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 1.25rem; }
         .guide-card { background: var(--bg-medium); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; transition: all 0.3s; display: flex; flex-direction: column; }
         .guide-card:hover { background: var(--bg-light); border-color: var(--accent2-dim); transform: translateY(-3px); }
@@ -189,6 +269,7 @@
             .budget-grid { grid-template-columns: 1fr; }
             .changes-grid { grid-template-columns: 1fr; }
             .guide-grid { grid-template-columns: repeat(2, 1fr); }
+            .prelim-steps { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
             .slide-title-page h1 { font-size: 2rem; }
@@ -240,7 +321,7 @@
         <div class="slide" data-slide="1">
             <div class="slide-content">
                 <div class="slide-header">
-                    <div class="slide-number">02 / 07</div>
+                    <div class="slide-number">02 / 08</div>
                     <h2 class="slide-title"><i class="fas fa-coins"></i> 예산 구조</h2>
                 </div>
                 <div class="slide-body">
@@ -272,7 +353,7 @@
         <div class="slide" data-slide="2">
             <div class="slide-content">
                 <div class="slide-header">
-                    <div class="slide-number">03 / 07</div>
+                    <div class="slide-number">03 / 08</div>
                     <h2 class="slide-title"><i class="fas fa-sitemap"></i> 배치 구성</h2>
                 </div>
                 <div class="slide-body">
@@ -296,55 +377,11 @@
             </div>
         </div>
 
-        <!-- 슬라이드 4: 2026년 운영 변경 안내 -->
+        <!-- 슬라이드 4: 세부 로드맵 (기존 5→4) -->
         <div class="slide" data-slide="3">
             <div class="slide-content">
                 <div class="slide-header">
-                    <div class="slide-number">04 / 07</div>
-                    <h2 class="slide-title"><i class="fas fa-bullhorn"></i> 2026년 운영 변경 안내</h2>
-                </div>
-                <div class="slide-body">
-                    <div class="changes-grid">
-                        <div class="change-card">
-                            <div class="card-icon ai">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div class="card-label">변경 01</div>
-                            <div class="card-heading">참가자 AI 사용 허용</div>
-                            <div class="card-desc">
-                                대회 참가자의 <strong>AI 도구 사용 허용</strong>
-                            </div>
-                        </div>
-                        <div class="change-card">
-                            <div class="card-icon doc">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                            <div class="card-label">변경 02</div>
-                            <div class="card-heading">심사대상 및 제출결과물</div>
-                            <div class="card-desc">
-                                심사대상 제출결과물: <strong>테스트 결과서 1식</strong>
-                            </div>
-                        </div>
-                        <div class="change-card">
-                            <div class="card-icon hotel">
-                                <i class="fas fa-bed"></i>
-                            </div>
-                            <div class="card-label">변경 03</div>
-                            <div class="card-heading">숙박비 개별결제</div>
-                            <div class="card-desc">
-                                업무 분장 및 노쇼 방지를 위한 <strong>기관별 참석인원 사전조사</strong> 및 개별결제(고려)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 슬라이드 5: 세부 로드맵 (기존 6→5) -->
-        <div class="slide" data-slide="4">
-            <div class="slide-content">
-                <div class="slide-header">
-                    <div class="slide-number">05 / 07</div>
+                    <div class="slide-number">04 / 08</div>
                     <h2 class="slide-title"><i class="fas fa-road"></i> 세부 로드맵 (3월 ~ 8월)</h2>
                 </div>
                 <div class="slide-body">
@@ -420,11 +457,119 @@
             </div>
         </div>
 
-        <!-- 슬라이드 6: 협의체 및 TF팀 운영 안내 (기존 5→6) -->
+        <!-- 슬라이드 5: 2026년 운영 변경 안내 (기존 4→5) -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">05 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-bullhorn"></i> 2026년 운영 변경 안내</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="changes-grid">
+                        <div class="change-card">
+                            <div class="card-icon ai">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="card-label">변경 01</div>
+                            <div class="card-heading">참가자 AI 사용 허용</div>
+                            <div class="card-desc">
+                                대회 참가자의 <strong>AI 도구 사용 허용</strong>
+                            </div>
+                        </div>
+                        <div class="change-card">
+                            <div class="card-icon doc">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="card-label">변경 02</div>
+                            <div class="card-heading">심사대상 및 제출결과물</div>
+                            <div class="card-desc">
+                                심사대상 제출결과물: <strong>테스트 결과서 1식</strong>
+                            </div>
+                        </div>
+                        <div class="change-card">
+                            <div class="card-icon hotel">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <div class="card-label">변경 03</div>
+                            <div class="card-heading">숙박비 개별결제</div>
+                            <div class="card-desc">
+                                업무 분장 및 노쇼 방지를 위한 <strong>기관별 참석인원 사전조사</strong> 및 개별결제(고려)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 6: 지역별 예선 운영 안내 (신규) -->
         <div class="slide" data-slide="5">
             <div class="slide-content">
                 <div class="slide-header">
-                    <div class="slide-number">06 / 07</div>
+                    <div class="slide-number">06 / 08</div>
+                    <h2 class="slide-title"><i class="fas fa-flag-checkered"></i> 지역별 예선 운영 안내</h2>
+                </div>
+                <div class="slide-body">
+                    <div class="prelim-notice">
+                        <div class="notice-icon"><i class="fas fa-bullhorn"></i></div>
+                        <div class="notice-content">
+                            <div class="notice-label">예선개최</div>
+                            <div class="notice-text">
+                                6월 용역사 선정 완료 후 기관별 6-7월 모집, 7월까지 지역별 예선 진행 및 본선진출팀 선발
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="prelim-stats">
+                        <div class="stat-card">
+                            <div class="stat-label">본선규모</div>
+                            <div class="stat-value">50<span class="stat-unit">팀</span></div>
+                        </div>
+                        <div class="stat-divider">÷</div>
+                        <div class="stat-card">
+                            <div class="stat-label">참여기관</div>
+                            <div class="stat-value">14<span class="stat-unit">개</span></div>
+                        </div>
+                        <div class="stat-divider">=</div>
+                        <div class="stat-card highlight">
+                            <div class="stat-label">기관별 선발</div>
+                            <div class="stat-value">3.57<span class="stat-unit">팀</span></div>
+                        </div>
+                    </div>
+
+                    <div class="prelim-steps">
+                        <div class="step-card s1">
+                            <div class="step-header">
+                                <div class="step-badge">예선운영</div>
+                                <div class="step-title">예선선발계획</div>
+                            </div>
+                            <div class="step-options">
+                                <span class="step-opt">권역 예선</span>
+                                <span class="step-or">OR</span>
+                                <span class="step-opt">지역 예선</span>
+                            </div>
+                            <div class="step-desc">
+                                기관별 참가자 모집 후 7월까지 기관별 선발자 명단 대표기관에 제출
+                            </div>
+                        </div>
+                        <div class="step-card s2">
+                            <div class="step-header">
+                                <div class="step-badge">예선선발</div>
+                                <div class="step-title">기관별 예선 선발 인원 배정</div>
+                            </div>
+                            <div class="step-desc">
+                                각 기관(또는 권역)별 본선 진출 팀 수 협의
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 슬라이드 7: 협의체 및 TF팀 운영 안내 (기존 6→7) -->
+        <div class="slide" data-slide="6">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="slide-number">07 / 08</div>
                     <h2 class="slide-title"><i class="fas fa-handshake"></i> 협의체 및 TF팀 운영 안내</h2>
                 </div>
                 <div class="slide-body">
@@ -466,11 +611,11 @@
             </div>
         </div>
 
-        <!-- 슬라이드 7: 마무리 -->
-        <div class="slide" data-slide="6">
+        <!-- 슬라이드 8: 마무리 (기존 7→8) -->
+        <div class="slide" data-slide="7">
             <div class="slide-content">
                 <div class="slide-header">
-                    <div class="slide-number">07 / 07</div>
+                    <div class="slide-number">08 / 08</div>
                     <h2 class="slide-title"><i class="fas fa-trophy"></i> 끝</h2>
                 </div>
                 <div class="slide-body">
